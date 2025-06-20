@@ -5,7 +5,7 @@ import optuna
 from datasets import Dataset
 from setfit import Trainer
 from sklearn.model_selection import StratifiedKFold
-from Tools import Model_Validator
+from Tools import Model_Evaluator
 from Tools.Model_Usage import FewShot
 from functools import partial
 

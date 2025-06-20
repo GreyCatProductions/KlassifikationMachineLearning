@@ -4,11 +4,12 @@
 #SBATCH --nodes=1                    # On a single node
 #SBATCH --ntasks=1                   # With a single task (this should always be 1 for single-GPU jobs)
 #SBATCH --cpus-per-task=4            # With that many CPU cores (adjust if your model benefits from more CPU during data prep)
-#SBATCH --mem-per-gpu=40GB           # <--- CRITICAL: Request 32GB of VRAM per GPU (adjust this based on your GPU's capacity and model's needs, e.g., 24GB, 40GB, 80GB)
 #SBATCH --time=1-00:00               # Maximum runtime of the job as "d-hh:mm" (1 day, 0 hours, 0 minutes)
 #SBATCH --output=logs/%x-%j.log
-#SBATCH --error=logs/%x-%j.log
-#SBATCH --gres=gpu:1                 # Request 1 GPU
+#SBATCH --error=logs/%x-%j.err
+#SBATCH --gres=gpu:a100_40gb:1
+#SBATCH --mem-per-gpu=40GB
+
 
 # --- Environment Setup ---
 echo "Activating Python environment..."

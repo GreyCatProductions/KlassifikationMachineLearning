@@ -5,7 +5,7 @@ from Helper import Evaluated_Data_Comparer
 def main():
     print("Comparer started")
 
-    ziped_evaulated_folder = Path("./Ziped_Evaluated_Data")
+    ziped_evaulated_folder = Path("Ziped_Evaluated_Data")
     unziped_evaluated_folder = Path("./Unziped_Evaluated_Data")
 
     print("Unzipping evaluated data from", ziped_evaulated_folder, "to", unziped_evaluated_folder)
