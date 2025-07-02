@@ -20,7 +20,7 @@ def filter_csv_by_label(target: Path, target_label_column: str, labels_to_filter
 
 if __name__ == "__main__":
     target_file = Path("./stackshare_labeled.csv")
-    filter_file = Path("./Classifications_Product(sample_to_classify).csv")
+    filter_file = Path("../Training_Data_Filtered/Classifications_Product(sample_to_classify).csv")
     output_folder = Path("./filtered_dataset")
     output_folder.mkdir(parents=True, exist_ok=True)
     output_path = Path(f"{output_folder}/{target_file.name}_filtered.csv")

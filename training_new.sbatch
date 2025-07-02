@@ -4,7 +4,7 @@
 #SBATCH --nodes=1                    # On a single node
 #SBATCH --ntasks=1                   # With a single task (this should always be 1 for single-GPU jobs)
 #SBATCH --cpus-per-task=4            # With that many CPU cores (adjust if your model benefits from more CPU during data prep)
-#SBATCH --time=1-00:00               # Maximum runtime of the job as "d-hh:mm" (1 day, 0 hours, 0 minutes)
+#SBATCH --time=5-00:00               # Maximum runtime of the job as "d-hh:mm" (1 day, 0 hours, 0 minutes)
 #SBATCH --output=logs/%x-%j.log
 #SBATCH --error=logs/%x-%j.err
 #SBATCH --gres=gpu:a100_40gb:1

@@ -8,7 +8,7 @@ def load_model():
     model_name = "sentence-transformers/paraphrase-mpnet-base-v2"
     default_save_path = Path("./downloaded_model")
 
-    # 1. Check if a local scratch path is provided via environment variable (for HPC)
+    # Load from HPC local scratch if available
     hpc_local_path_str = os.getenv("SETFIT_MODEL_PATH")
     if hpc_local_path_str:
         hpc_local_path = Path(hpc_local_path_str)
@@ -20,12 +20,12 @@ def load_model():
     else:
         print("SETFIT_MODEL_PATH not set. Skipping HPC local scratch check.")
 
-    # 2. Fallback to default local download path
+    # Load from default local path SLOW
     if default_save_path.exists() and any(default_save_path.iterdir()):
         print(f"Loading model from default local path: {default_save_path}.")
         return SetFitModel.from_pretrained(str(default_save_path))
     else:
-        # 3. Download the model if not found anywhere
+        # 3. Download the model VERY SLOW
         print(f"Downloading model {model_name}...")
         model = SetFitModel.from_pretrained(model_name)
         print(f"Saving model to default local path: {default_save_path}...")

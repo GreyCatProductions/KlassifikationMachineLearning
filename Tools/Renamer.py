@@ -1,6 +1,8 @@
 from pathlib import Path
 from typing import List
 
+from pandas import DataFrame
+
 
 def rename(csv_file: Path) -> str:
     base_name = csv_file.stem

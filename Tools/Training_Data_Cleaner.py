@@ -11,7 +11,7 @@ def clear_folder(folder: Path):
                 item.unlink()
 
 def filter_training_data(training_data_unfiltered_folder: Path, training_data_filtered_folder: Path, text_columns: list[str],
-                         combine_into_column : str, label_column: str, negative_categories: list[str], positive_category: str):
+                         combine_into_column : str, label_column: str, translation: dict):
     if not Path.exists(training_data_unfiltered_folder):
         print(f"Unable to clean training data! {training_data_unfiltered_folder} does not exist")
         return
@@ -28,6 +28,7 @@ def filter_training_data(training_data_unfiltered_folder: Path, training_data_fi
             continue
 
         df = pd.read_csv(csv_file, delimiter=';')
+        df = df.replace(translation)
 
         missing_columns = [col for col in text_columns if col not in df.columns]
         if len(missing_columns) > 0:
@@ -38,13 +39,8 @@ def filter_training_data(training_data_unfiltered_folder: Path, training_data_fi
 
         df_cleaned[combine_into_column] = df_cleaned[text_columns].astype(str).agg(" ".join, axis=1)
 
-        df_cleaned[label_column] = df_cleaned[label_column].apply(
-            lambda x: 1 if str(x).strip() == positive_category else
-                      0 if str(x).strip() in negative_categories else None
-        )
-
         df_cleaned = df_cleaned.dropna(subset=[label_column])
-        df_cleaned[label_column] = df_cleaned[label_column].astype(int)
+        df_cleaned[label_column] = df_cleaned[label_column].astype(str)
 
         df_cleaned = df_cleaned[[combine_into_column, label_column]]
 

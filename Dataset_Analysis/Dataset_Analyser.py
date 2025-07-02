@@ -20,7 +20,7 @@ def analyse_dataset(path: Path, text_column: str, label_column: str) -> dict:
     }
 
 if __name__ == "__main__":
-    dataset_path = Path("./Classifications_Product(sample_to_classify).csv")
+    dataset_path = Path("../Training_Data_Filtered/Classifications_Product(sample_to_classify).csv")
     text_col = "Description"
     label_col = "Final"
 

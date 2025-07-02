@@ -35,6 +35,8 @@ def start_training(training_data_folder: Path, text_column: str, label_column: s
     n_trials = settings.get("n_trials")
     average = settings.get("average")
 
+    print(f"Loading data from {training_data_folder} with text column '{text_column}' and label column '{label_column}'")
+
     combined_datasets = _combine_datasets(training_data_folder, text_column, label_column)
 
     if not combined_datasets:
@@ -54,7 +56,8 @@ def start_training(training_data_folder: Path, text_column: str, label_column: s
     print("CUDA available:", torch.cuda.is_available())
 
     print("Starting cross validation with optuna with", n_splits, "folds and", n_trials, "trials")
-    print(f"Amount of labels: {len(labels)}, Amount of texts: {len(texts)}")
+    print("Filtering dones. Loaded texsts and labels")
+    print("Labels:", set(labels))
 
     best_params_per_fold = Cross_Validator_V2.cross_validate_with_optuna(texts, labels, n_splits, n_trials, average)
     print("Cross validation completed.")
