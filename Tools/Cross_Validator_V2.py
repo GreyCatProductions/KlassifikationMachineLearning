@@ -1,5 +1,4 @@
 import threading
-from typing import Tuple, List
 import optuna
 import torch
 from datasets import Dataset
@@ -24,17 +23,17 @@ def _extract_texts_and_labels(
 def _create_dataset(texts, labels):
     return Dataset.from_dict({"text": texts, "label": labels})
 
-def _train_and_evaluate_model(train_dataset, test_dataset, args, average) -> tuple[float, dict, float, float]:
-    model = FewShot.load_model()
+def _train_and_evaluate_model(train_dataset, test_dataset, optuna_params, average) -> tuple[float, dict, float, float]:
+    model = FewShot.load_model("sentence-transformers/paraphrase-mpnet-base-v2")
 
     arguments = TrainingArguments(
-        num_epochs=args["num_epochs"],
-        batch_size=args["batch_size"],
-        num_iterations=args["num_iterations"],
-        body_learning_rate=args["body_lr"],
-        head_learning_rate=args["head_lr"],
+        num_epochs=optuna_params["num_epochs"],
+        batch_size=optuna_params["batch_size"],
+        num_iterations=optuna_params["num_iterations"],
+        #body_learning_rate=optuna_params["body_lr"],
+        head_learning_rate=optuna_params["head_lr"],
         save_strategy="no",
-        eval_strategy="epoch",
+        eval_strategy="no",
         use_amp = True
     )
 
@@ -61,7 +60,7 @@ def _train_and_evaluate_model(train_dataset, test_dataset, args, average) -> tup
     avg_vram = sum(usage_list) / len(usage_list) if usage_list else 0
     max_vram = max(usage_list) if usage_list else 0
 
-    metrics = Model_Evaluator.evaluate_model(model, test_dataset["text"], test_dataset["label"], average)
+    metrics: dict = Model_Evaluator.evaluate_model(model, test_dataset["text"], test_dataset["label"], average)
     f1 = trainer.evaluate()["f1"]
 
     del model
@@ -71,15 +70,14 @@ def _train_and_evaluate_model(train_dataset, test_dataset, args, average) -> tup
 
 def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: int, n_trials: int, average: str):
 
-    all_metrics = []
+    all_metrics: list[list[dict]] = []
 
     def objective(trial):
         params = {
             "num_iterations": trial.suggest_int("num_iterations", 6, 10),
-            "num_epochs": trial.suggest_int("num_epochs", 1, 3),
-            "batch_size": trial.suggest_categorical("batch_size", [16, 24]),
-            "body_lr": trial.suggest_float("body_learning_rate", 1e-6, 5e-5, log=True),
-            "head_lr": trial.suggest_float("head_learning_rate", 1e-5, 1e-1, log=True)
+            "num_epochs": trial.suggest_int("num_epochs", 1, 4),
+            "batch_size": trial.suggest_categorical("batch_size", [16]),
+            "head_lr": trial.suggest_float("head_learning_rate", 1e-6, 1e-4, log=True)
         }
 
         print(f"Trial {trial.number}: {params}")
@@ -87,7 +85,7 @@ def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: in
         kfold = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=42)
         scores = []
         fold_metrics = []
-        vrams: List[Tuple[float, float]] = []
+        vrams: list[tuple[float, float]] = []
 
         for fold, (train_idx, test_idx) in enumerate(kfold.split(texts, labels)):
             print(f"Fold {fold + 1}/{n_splits}")
@@ -98,10 +96,11 @@ def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: in
 
             f1_score, metrics, avg_vram, max_vram = _train_and_evaluate_model(train_dataset, test_dataset, params, average)
             fold_metrics.append(metrics)
+            scores.append(f1_score)
             vrams.append((avg_vram, max_vram))
 
-            print("Fold finished")
-            scores.append(f1_score)
+            print(f"Fold finished F1 Score: {f1_score}", Model_Evaluator.pretty_print(metrics))
+
             del train_dataset
             del test_dataset
             torch.cuda.empty_cache()
@@ -110,7 +109,7 @@ def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: in
         max_vram = np.max([vram[1] for vram in vrams])
 
         print(f"Average VRAM usage: {avg_vram:.2f} MB, Max VRAM usage: {max_vram:.2f} MB")
-        print(f"Trial {trial.number} completed with F1 score: {np.mean(scores)}\n metrics: {fold_metrics}")
+        print(f"Trial {trial.number} completed with avg fold F1 score: {np.mean(scores)}")
         all_metrics.append(fold_metrics)
         return np.mean(scores)
 
@@ -118,13 +117,15 @@ def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: in
     study.optimize(objective, n_trials=n_trials)
 
     best_params = study.best_trial.params
-    print("\n\nBest Trial Found:")
+    print(f"\n\nBest Trial Found {study.best_trial.number}:")
     print(study.best_trial)
 
     print("\nMetrics: ")
-    metrics = all_metrics[study.best_trial.number]
+    fold_metrics = all_metrics[study.best_trial.number]
 
-    print(metrics)
-    Model_Evaluator.pretty_print(metrics)
+    for fold in range(n_splits):
+        print(f"\nFold {fold + 1} Metrics:")
+        metrics = fold_metrics[fold]
+        Model_Evaluator.pretty_print(metrics)
 
     return best_params

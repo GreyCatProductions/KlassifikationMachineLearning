@@ -4,8 +4,7 @@ from pathlib import Path
 import pandas as pd
 from setfit import SetFitModel
 
-def load_model():
-    model_name = "sentence-transformers/paraphrase-mpnet-base-v2"
+def load_model(model_name: str) -> SetFitModel:
     default_save_path = Path("./downloaded_model")
 
     # Load from HPC local scratch if available

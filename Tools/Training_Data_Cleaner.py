@@ -27,7 +27,7 @@ def filter_training_data(training_data_unfiltered_folder: Path, training_data_fi
             print(f"{csv_file} is not a csv file! Skipping it!")
             continue
 
-        df = pd.read_csv(csv_file, delimiter=';')
+        df = pd.read_csv(csv_file, engine="python", sep=None)
         df = df.replace(translation)
 
         missing_columns = [col for col in text_columns if col not in df.columns]

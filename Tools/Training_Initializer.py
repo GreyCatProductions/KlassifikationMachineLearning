@@ -1,13 +1,12 @@
-import copy
-from collections import Counter
 from pathlib import Path
 import pandas as pd
 import torch
 from datasets import Dataset
-from pandas import read_csv
+from pandas import read_csv, DataFrame
 from Tools import Cross_Validator_V2, CSV_Tools
 from Tools.Model_Usage import FewShot
-from setfit import Trainer
+from setfit import Trainer, SetFitModel, TrainingArguments
+
 
 def _combine_datasets(training_data_folder: Path, text_column: str, label_column: str):
     if not training_data_folder.exists():
@@ -29,8 +28,8 @@ def _combine_datasets(training_data_folder: Path, text_column: str, label_column
         combined.append(df)
     return combined
 
-def start_training(training_data_folder: Path, text_column: str, label_column: str, model_save_location: Path,
-                   settings: dict):
+def start_cross_validation_training_with_optuna(training_data_folder: Path, text_column: str, label_column: str, model_save_location: Path,
+                                                settings: dict):
     n_splits = settings.get("n_splits")
     n_trials = settings.get("n_trials")
     average = settings.get("average")
@@ -49,6 +48,53 @@ def start_training(training_data_folder: Path, text_column: str, label_column: s
     texts: list[str] = full_df[text_column].astype(str).tolist()
     labels: list[str] = full_df[label_column].astype(str).tolist()
 
+    print_info(n_splits, n_trials, labels)
+
+    best_params: dict[str, any] = Cross_Validator_V2.cross_validate_with_optuna(texts, labels, n_splits, n_trials, average)
+    print("Cross validation completed.")
+
+    print("Training final model on full dataset with optimal fold average parameters...")
+    model_save_location.mkdir(parents=True, exist_ok=True)
+
+    final_arguments = TrainingArguments(
+        num_epochs=best_params["num_epochs"],
+        batch_size=best_params["batch_size"],
+        num_iterations=best_params["num_iterations"],
+        head_learning_rate=best_params["head_lr"],
+        save_strategy="no",
+        eval_strategy="epoch",
+        use_amp=True
+    )
+
+    final_model = train_final_model(full_df, text_column, label_column, final_arguments)
+    final_model.save_pretrained(str(model_save_location))
+
+    print(f"Final model trained on full dataset and saved at {model_save_location}.")
+
+def start_training(training_data_folder: Path, text_column: str, label_column: str, model_save_location: Path,
+                   parameters: TrainingArguments):
+
+    print(f"Loading data from {training_data_folder} with text column '{text_column}' and label column '{label_column}'")
+
+    combined_datasets = _combine_datasets(training_data_folder, text_column, label_column)
+
+    if not combined_datasets:
+        print("No valid datasets found. Aborting.")
+        return
+
+    full_df = pd.concat(combined_datasets, ignore_index=True)
+    print(f"Loaded {len(full_df)} total examples for training.")
+
+    print(f"Training model with parameters {parameters}")
+
+    final_model = train_final_model(full_df, text_column, label_column, parameters)
+    model_save_location.mkdir(parents=True, exist_ok=True)
+    final_model.save_pretrained(str(model_save_location))
+
+    print(f"Final model trained on full dataset and saved at {model_save_location}.")
+
+
+def print_info(n_splits, n_trials, labels):
     if not torch.cuda.is_available():
         print("Warning: No GPU available. Training will be done on CPU, which may be slow.")
     device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -59,51 +105,10 @@ def start_training(training_data_folder: Path, text_column: str, label_column: s
     print("Filtering dones. Loaded texsts and labels")
     print("Labels:", set(labels))
 
-    best_params_per_fold = Cross_Validator_V2.cross_validate_with_optuna(texts, labels, n_splits, n_trials, average)
-    print("Cross validation completed.")
-
-    return
-    if all_best_params_per_fold:
-        print("\n--- Average Best Hyperparameters Across Folds ---")
-
-        avg_params = {}
-        for param_name in all_best_params_per_fold[0].keys():
-            values = [p[param_name] for p in all_best_params_per_fold]
-            if isinstance(values[0], (int, float)):
-                avg_params[param_name] = sum(values) / len(values)
-            else:
-                counts = Counter(values)
-                avg_params[param_name] = counts.most_common(1)[0][0]
-        print(avg_params)
-
-        final_model_args = copy.deepcopy(base_args)
-        for k, v in avg_params.items():
-            if hasattr(final_model_args, k):
-                setattr(final_model_args, k, v)
-            if k == "batch_size":
-                final_model_args.setfit_batch_size = v
-            elif k == "num_iterations":
-                final_model_args.num_iterations = v
-            elif k == "num_epochs":
-                final_model_args.num_epochs = v
-        print("\nFinal model will be trained with these average parameters.")
-    else:
-        print("No best hyperparameters found from cross-validation. Training final model with base_args.")
-        final_model_args = base_args
-
-    print("Training final model on full dataset...")
-    final_model = FewShot.load_model()
-    final_model.to(device)
+def train_final_model(full_df: DataFrame, text_column: str, label_column: str, params: TrainingArguments) -> SetFitModel:
+    final_model = FewShot.load_model("sentence-transformers/paraphrase-mpnet-base-v2")
 
     final_dataset = Dataset.from_pandas(full_df.rename(columns={text_column: "text", label_column: "label"}))
-
-    final_trainer = Trainer(model=final_model, args=final_model_args, train_dataset=final_dataset)
+    final_trainer = Trainer(model=final_model, args=params, train_dataset=final_dataset)
     final_trainer.train()
-
-    model_save_location.mkdir(parents=True, exist_ok=True)
-    final_model.save_pretrained(str(model_save_location))
-    print(f"Final model trained on full dataset and saved at {model_save_location}.")
-
-
-
-
+    return final_model
