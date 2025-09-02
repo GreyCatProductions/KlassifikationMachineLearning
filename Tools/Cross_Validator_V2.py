@@ -1,4 +1,6 @@
 import threading
+from pathlib import Path
+
 import optuna
 import torch
 from datasets import Dataset
@@ -23,8 +25,8 @@ def _extract_texts_and_labels(
 def _create_dataset(texts, labels):
     return Dataset.from_dict({"text": texts, "label": labels})
 
-def _train_and_evaluate_model(train_dataset, test_dataset, optuna_params, average) -> tuple[float, dict, float, float]:
-    model = FewShot.load_model("sentence-transformers/paraphrase-mpnet-base-v2")
+def _train_and_evaluate_model(model_to_use: Path, train_dataset, test_dataset, optuna_params, average) -> tuple[float, dict, float, float]:
+    model = FewShot.load_model(model_to_use)
 
     arguments = TrainingArguments(
         num_epochs=optuna_params["num_epochs"],
@@ -68,16 +70,16 @@ def _train_and_evaluate_model(train_dataset, test_dataset, optuna_params, averag
     torch.cuda.empty_cache()
     return f1, metrics, avg_vram, max_vram
 
-def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: int, n_trials: int, average: str):
+def cross_validate_with_optuna(model_to_use: Path, texts: list[str], labels: list[str], n_splits: int, n_trials: int, average: str):
 
     all_metrics: list[list[dict]] = []
 
     def objective(trial):
         params = {
-            "num_iterations": trial.suggest_int("num_iterations", 6, 10),
-            "num_epochs": trial.suggest_int("num_epochs", 1, 4),
+            "num_iterations": trial.suggest_int("num_iterations", 9, 11),
+            "num_epochs": trial.suggest_int("num_epochs", 4, 6),
             "batch_size": trial.suggest_categorical("batch_size", [16]),
-            "head_lr": trial.suggest_float("head_learning_rate", 1e-6, 1e-4, log=True)
+            "head_lr": trial.suggest_float("head_learning_rate", 1e-5, 2e-5, log=True)
         }
 
         print(f"Trial {trial.number}: {params}")
@@ -94,7 +96,7 @@ def cross_validate_with_optuna(texts: list[str], labels: list[str], n_splits: in
             train_dataset = _create_dataset(train_texts, train_labels)
             test_dataset = _create_dataset(test_texts, test_labels)
 
-            f1_score, metrics, avg_vram, max_vram = _train_and_evaluate_model(train_dataset, test_dataset, params, average)
+            f1_score, metrics, avg_vram, max_vram = _train_and_evaluate_model(model_to_use, train_dataset, test_dataset, params, average)
             fold_metrics.append(metrics)
             scores.append(f1_score)
             vrams.append((avg_vram, max_vram))

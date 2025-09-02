@@ -25,10 +25,11 @@ def _combine_datasets(training_data_folder: Path, text_column: str, label_column
             print(f"{dataset} does not contain the required columns: {text_column}, {label_column}. Skipping it!")
             continue
 
+        print(f"{dataset.name} loaded with", len(df), "examples.")
         combined.append(df)
     return combined
 
-def start_cross_validation_training_with_optuna(training_data_folder: Path, text_column: str, label_column: str, model_save_location: Path,
+def start_cross_validation_training_with_optuna(training_data_folder: Path, text_column: str, label_column: str, model_to_use: Path, model_save_location: Path,
                                                 settings: dict):
     n_splits = settings.get("n_splits")
     n_trials = settings.get("n_trials")
@@ -50,7 +51,7 @@ def start_cross_validation_training_with_optuna(training_data_folder: Path, text
 
     print_info(n_splits, n_trials, labels)
 
-    best_params: dict[str, any] = Cross_Validator_V2.cross_validate_with_optuna(texts, labels, n_splits, n_trials, average)
+    best_params: dict[str, any] = Cross_Validator_V2.cross_validate_with_optuna(model_to_use, texts, labels, n_splits, n_trials, average)
     print("Cross validation completed.")
 
     print("Training final model on full dataset with optimal fold average parameters...")
@@ -66,7 +67,7 @@ def start_cross_validation_training_with_optuna(training_data_folder: Path, text
         use_amp=True
     )
 
-    final_model = train_final_model(full_df, text_column, label_column, final_arguments)
+    final_model = train_final_model(model_save_location, full_df, text_column, label_column, final_arguments)
     final_model.save_pretrained(str(model_save_location))
 
     print(f"Final model trained on full dataset and saved at {model_save_location}.")
@@ -87,7 +88,7 @@ def start_training(training_data_folder: Path, text_column: str, label_column: s
 
     print(f"Training model with parameters {parameters}")
 
-    final_model = train_final_model(full_df, text_column, label_column, parameters)
+    final_model = train_final_model(model_save_location, full_df, text_column, label_column, parameters)
     model_save_location.mkdir(parents=True, exist_ok=True)
     final_model.save_pretrained(str(model_save_location))
 
@@ -105,8 +106,8 @@ def print_info(n_splits, n_trials, labels):
     print("Filtering dones. Loaded texsts and labels")
     print("Labels:", set(labels))
 
-def train_final_model(full_df: DataFrame, text_column: str, label_column: str, params: TrainingArguments) -> SetFitModel:
-    final_model = FewShot.load_model("sentence-transformers/paraphrase-mpnet-base-v2")
+def train_final_model(model_save_location: Path, full_df: DataFrame, text_column: str, label_column: str, params: TrainingArguments) -> SetFitModel:
+    final_model = FewShot.load_model(model_save_location)
 
     final_dataset = Dataset.from_pandas(full_df.rename(columns={text_column: "text", label_column: "label"}))
     final_trainer = Trainer(model=final_model, args=params, train_dataset=final_dataset)
