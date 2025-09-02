@@ -8,12 +8,18 @@ from Tools.Model_Usage import FewShot
 from setfit import Trainer, SetFitModel, TrainingArguments
 
 
-def _combine_datasets(training_data_folder: Path, text_column: str, label_column: str):
+def _combine_datasets(training_data_folder: Path, text_column: str, label_column: str, excluded_datasets: list[Path] | None = None) -> list[DataFrame]:
     if not training_data_folder.exists():
         raise FileNotFoundError(f"training data folder {training_data_folder} does not exist! Can not train!")
 
+    excluded = {p.resolve() for p in (excluded_datasets or [])}
+
     combined = []
     for dataset in training_data_folder.iterdir():
+        if dataset.resolve() in excluded:
+            print(f"{dataset} is excluded. Skipping")
+            continue
+
         if not CSV_Tools.verify_csv_structure(dataset):
             print(f"{dataset} is not a csv file! Skipping it!")
             continue
@@ -29,7 +35,7 @@ def _combine_datasets(training_data_folder: Path, text_column: str, label_column
         combined.append(df)
     return combined
 
-def start_cross_validation_training_with_optuna(training_data_folder: Path, text_column: str, label_column: str, model_to_use: Path, model_save_location: Path,
+def start_cross_validation_training_with_optuna(training_data_folder: Path, kfold_csv: Path, text_column: str, label_column: str, model_to_use: Path, model_save_location: Path,
                                                 settings: dict):
     n_splits = settings.get("n_splits")
     n_trials = settings.get("n_trials")
@@ -37,21 +43,25 @@ def start_cross_validation_training_with_optuna(training_data_folder: Path, text
 
     print(f"Loading data from {training_data_folder} with text column '{text_column}' and label column '{label_column}'")
 
-    combined_datasets = _combine_datasets(training_data_folder, text_column, label_column)
+    combined_datasets = _combine_datasets(training_data_folder, text_column, label_column, [kfold_csv])
 
     if not combined_datasets:
         print("No valid datasets found. Aborting.")
         return
 
-    full_df = pd.concat(combined_datasets, ignore_index=True)
-    print(f"Loaded {len(full_df)} total examples for training.")
+    add_df: DataFrame = pd.concat(combined_datasets, ignore_index=True)
+    kfold_df: DataFrame = pd.read_csv(kfold_csv)
+    print(f"Loaded {len(add_df)} to add to training.")
+    print(f"Loaded {len(kfold_df)} to use for kfold")
 
-    texts: list[str] = full_df[text_column].astype(str).tolist()
-    labels: list[str] = full_df[label_column].astype(str).tolist()
+    texts_kfold: list[str] = kfold_df[text_column].astype(str).tolist()
+    labels_kfold: list[str] = kfold_df[label_column].astype(str).tolist()
+    texts_add: list[str] = add_df[text_column].astype(str).tolist()
+    labels_add: list[str] = add_df[label_column].astype(str).tolist()
 
-    print_info(n_splits, n_trials, labels)
+    print_info(n_splits, n_trials, labels_add)
 
-    best_params: dict[str, any] = Cross_Validator_V2.cross_validate_with_optuna(model_to_use, texts, labels, n_splits, n_trials, average)
+    best_params: dict[str, any] = Cross_Validator_V2.cross_validate_with_optuna(model_to_use, texts_add, labels_add, texts_kfold, labels_kfold, n_splits, n_trials, average)
     print("Cross validation completed.")
 
     print("Training final model on full dataset with optimal fold average parameters...")
@@ -63,11 +73,11 @@ def start_cross_validation_training_with_optuna(training_data_folder: Path, text
         num_iterations=best_params["num_iterations"],
         head_learning_rate=best_params["head_lr"],
         save_strategy="no",
-        eval_strategy="epoch",
+        eval_strategy="no",
         use_amp=True
     )
 
-    final_model = train_final_model(model_save_location, full_df, text_column, label_column, final_arguments)
+    final_model = train_final_model(model_save_location, pd.concat([add_df, kfold_df]), text_column, label_column, final_arguments)
     final_model.save_pretrained(str(model_save_location))
 
     print(f"Final model trained on full dataset and saved at {model_save_location}.")

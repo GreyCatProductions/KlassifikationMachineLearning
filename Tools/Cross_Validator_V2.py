@@ -1,9 +1,8 @@
 import threading
 from pathlib import Path
-
 import optuna
 import torch
-from datasets import Dataset
+from datasets import Dataset, concatenate_datasets
 from setfit import Trainer, TrainingArguments
 from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import f1_score
@@ -22,7 +21,7 @@ def _extract_texts_and_labels(
     return train_texts, train_labels, test_texts, test_labels
 
 
-def _create_dataset(texts, labels):
+def _create_dataset(texts, labels) -> Dataset:
     return Dataset.from_dict({"text": texts, "label": labels})
 
 def _train_and_evaluate_model(model_to_use: Path, train_dataset, test_dataset, optuna_params, average) -> tuple[float, dict, float, float]:
@@ -70,9 +69,13 @@ def _train_and_evaluate_model(model_to_use: Path, train_dataset, test_dataset, o
     torch.cuda.empty_cache()
     return f1, metrics, avg_vram, max_vram
 
-def cross_validate_with_optuna(model_to_use: Path, texts: list[str], labels: list[str], n_splits: int, n_trials: int, average: str):
+def cross_validate_with_optuna(model_to_use: Path, texts_add: list[str], labels_add: list[str], texts_kfold: list[str], labels_kfold: list[str], n_splits: int, n_trials: int, average: str):
 
     all_metrics: list[list[dict]] = []
+
+    dataset_to_add = None
+    if texts_add is not None and labels_add is not None and len(texts_add) > 0 and len(labels_add) > 0:
+        dataset_to_add = _create_dataset(texts_add, labels_add)
 
     def objective(trial):
         params = {
@@ -89,19 +92,22 @@ def cross_validate_with_optuna(model_to_use: Path, texts: list[str], labels: lis
         fold_metrics = []
         vrams: list[tuple[float, float]] = []
 
-        for fold, (train_idx, test_idx) in enumerate(kfold.split(texts, labels)):
+        for fold, (train_idx, test_idx) in enumerate(kfold.split(texts_kfold, labels_kfold)):
             print(f"Fold {fold + 1}/{n_splits}")
 
-            train_texts, train_labels, test_texts, test_labels = _extract_texts_and_labels(texts, labels, train_idx, test_idx)
-            train_dataset = _create_dataset(train_texts, train_labels)
+            train_texts, train_labels, test_texts, test_labels = _extract_texts_and_labels(texts_kfold, labels_kfold, train_idx, test_idx)
+            train_dataset: Dataset = _create_dataset(train_texts, train_labels)
+            if dataset_to_add is not None:
+                train_dataset = concatenate_datasets([train_dataset, dataset_to_add])
+
             test_dataset = _create_dataset(test_texts, test_labels)
 
-            f1_score, metrics, avg_vram, max_vram = _train_and_evaluate_model(model_to_use, train_dataset, test_dataset, params, average)
+            f1, metrics, avg_vram, max_vram = _train_and_evaluate_model(model_to_use, train_dataset, test_dataset, params, average)
             fold_metrics.append(metrics)
-            scores.append(f1_score)
+            scores.append(f1)
             vrams.append((avg_vram, max_vram))
 
-            print(f"Fold finished F1 Score: {f1_score}", Model_Evaluator.pretty_print(metrics))
+            print(f"Fold finished F1 Score: {f1} {metrics["f1"]}", Model_Evaluator.pretty_print(metrics))
 
             del train_dataset
             del test_dataset
