@@ -23,6 +23,7 @@ def main():
     base_model_location = Path("downloaded_model")
     model_save_location = Path("Trained_Model_Stackshare_and_Github")
     training_data_filtered = Path("Training_Data_Filtered") #dataset path
+    evaluate_on_dataset = Path("Training_Data_Filtered/github_daten_filtered.csv") #leave empty for default
     combined_column = "text" #text column from dataset
     label_column = "label" #label column from dataset
 
@@ -37,7 +38,7 @@ def main():
             "n_splits": 5,
             "average": "weighted"
         }
-        Training_Initializer.start_cross_validation_training_with_optuna(training_data_filtered, combined_column,
+        Training_Initializer.start_cross_validation_training_with_optuna(training_data_filtered, evaluate_on_dataset, combined_column,
                                                                          label_column, base_model_location, model_save_location, settings)
     else:
         print("Starting standard training...")
