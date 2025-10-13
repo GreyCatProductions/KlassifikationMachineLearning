@@ -40,14 +40,14 @@ def load_trained_model(save_path: Path) -> SetFitModel:
     model = SetFitModel.from_pretrained(str(save_path))
     return model
 
-def classify(model: SetFitModel, extracted_folder: Path, text_column: str, output_folder: Path):
-    if not extracted_folder.exists():
+def classify(model: SetFitModel, data_folder: Path, text_column: str, output_folder: Path):
+    if not data_folder.exists():
         print("Extracted folder does not exist. Cant classify")
         return None
 
     output_folder.mkdir(parents=True, exist_ok=True)
 
-    for csv_file in extracted_folder.iterdir():
+    for csv_file in data_folder.iterdir():
         if not csv_file.is_file() or not csv_file.suffix.lower() == ".csv":
             print(f"{csv_file} is not a csv file! Skipping it!")
             continue

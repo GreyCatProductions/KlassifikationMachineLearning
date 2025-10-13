@@ -10,7 +10,7 @@ def prepare_data_for_evaluation(zips_folder: Path, unziped_folder: Path,
     extracted_folder.mkdir(exist_ok=True)
 
     if len(relevant_columns) == 0:
-        print("Relevant columns can not be 0!")
+        print("Relevant columns amount can not be 0!")
         return False
 
     print("Unzipping files")

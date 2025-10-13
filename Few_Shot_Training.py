@@ -29,11 +29,11 @@ def main():
     if not data_already_prepared:
         prepare_data(training_data_filtered, combined_column, label_column)
 
-    cross_validate = True
+    cross_validate = False
     if cross_validate:
         print("Starting optuna cross validation training...")
         settings = {
-            "n_trials": 30,
+            "n_trials": 3,
             "n_splits": 5,
             "average": "weighted"
         }
@@ -42,12 +42,12 @@ def main():
     else:
         print("Starting standard training...")
         parameters = TrainingArguments(
-            num_epochs=5,
+            num_epochs=3,
             batch_size=16,
-            num_iterations=12,
-            head_learning_rate=1.0719864040714887e-05,
+            num_iterations=8,
+            head_learning_rate=1.5339162591163613e-05,
             save_strategy="no",
-            eval_strategy="no", #no eval needed for this training
+            eval_strategy="no",
             use_amp=True
         )
         Training_Initializer.start_training(training_data_filtered, combined_column, label_column, model_save_location, parameters)

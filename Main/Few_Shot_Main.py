@@ -16,7 +16,7 @@ def main():
     prepare_data_for_evaluation(zips_folder, unziped_folder, extracted_folder, relevant_columns, name_column, text_column)
 
     print("Loading model")
-    model_to_use = Path("./Trained_Model_Stackshare")
+    model_to_use = Path("./download")
     model = FewShot.load_trained_model(model_to_use)
     print("Model loaded. Classifying data...")
     FewShot.classify(model, extracted_folder, text_column, evaluated_folder)
