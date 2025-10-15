@@ -21,7 +21,7 @@ def prepare_data(training_data_filtered, combined_into_column, label_column):
 def main():
     data_already_prepared = True
     base_model_location = Path("downloaded_model")
-    model_save_location = Path("Trained_Model_Stackshare_and_Github")
+    model_save_location = Path("Trained_Model_Data_Journalism_V2")
     training_data_filtered = Path("Training_Data_Filtered") #dataset path
     combined_column = "text" #text column from dataset
     label_column = "label" #label column from dataset
@@ -29,11 +29,11 @@ def main():
     if not data_already_prepared:
         prepare_data(training_data_filtered, combined_column, label_column)
 
-    cross_validate = False
+    cross_validate = True
     if cross_validate:
         print("Starting optuna cross validation training...")
         settings = {
-            "n_trials": 3,
+            "n_trials": 100,
             "n_splits": 5,
             "average": "weighted"
         }

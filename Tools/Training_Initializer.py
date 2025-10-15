@@ -58,12 +58,12 @@ def start_cross_validation_training_with_optuna(training_data_folder: Path, text
     model_save_location.mkdir(parents=True, exist_ok=True)
 
     final_arguments = TrainingArguments(
-        num_epochs=best_params["num_epochs"],
-        batch_size=best_params["batch_size"],
-        num_iterations=best_params["num_iterations"],
-        head_learning_rate=best_params["head_learning_rate"],
-        save_strategy="no",
-        eval_strategy="epoch",
+        num_epochs=best_params['num_epochs'],
+        batch_size=best_params['batch_size'],
+        num_iterations=best_params['num_iterations'],
+        head_learning_rate=best_params['head_learning_rate'],
+        save_strategy='no',
+        eval_strategy='no',
         use_amp=True
     )
 

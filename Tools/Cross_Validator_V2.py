@@ -76,10 +76,10 @@ def cross_validate_with_optuna(model_to_use: Path, texts: list[str], labels: lis
 
     def objective(trial):
         params = {
-            "num_iterations": trial.suggest_int("num_iterations", 9, 11),
-            "num_epochs": trial.suggest_int("num_epochs", 4, 6),
+            "num_iterations": trial.suggest_int("num_iterations", 6, 9),
+            "num_epochs": trial.suggest_int("num_epochs", 2, 4),
             "batch_size": trial.suggest_categorical("batch_size", [16]),
-            "head_lr": trial.suggest_float("head_learning_rate", 1e-5, 2e-5, log=True)
+            "head_lr": trial.suggest_float("head_learning_rate", 1e-5, 1e-1, log=True)
         }
 
         print(f"Trial {trial.number}: {params}")
