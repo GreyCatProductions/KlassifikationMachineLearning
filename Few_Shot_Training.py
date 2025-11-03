@@ -19,9 +19,9 @@ def prepare_data(training_data_filtered, combined_into_column, label_column):
                                                combined_into_column, label_column, translation)
 
 def main():
-    data_already_prepared = True
+    data_already_prepared = False
     base_model_location = Path("downloaded_model")
-    model_save_location = Path("Trained_Model_Data_Journalism_V2")
+    model_save_location = Path("classification_data_align_V1")
     training_data_filtered = Path("Training_Data_Filtered") #dataset path
     combined_column = "text" #text column from dataset
     label_column = "label" #label column from dataset

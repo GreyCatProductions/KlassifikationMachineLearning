@@ -4,13 +4,14 @@ from sklearn.metrics import accuracy_score, precision_recall_fscore_support, con
 from collections import Counter
 
 
-def evaluate_model(model: SetFitModel, test_texts: list[str], test_labels: list[int], average: str) -> dict:
-    predictions = model.predict(test_texts)
+def evaluate_model(model: SetFitModel, test_texts: list[str], test_labels: list[str], average: str) -> (dict, list[str]):
+    model.labels = test_labels
+    predictions: list[str] = model.predict(inputs=test_texts, use_labels=True)
     accuracy = accuracy_score(test_labels, predictions)
 
     unique_labels = sorted(list(set(test_labels)))
     precision, recall, f1, _ = precision_recall_fscore_support(
-        test_labels, predictions, average=average, labels=unique_labels
+        test_labels, predictions, average=average, labels=unique_labels, zero_division=0
     )
 
     cm = confusion_matrix(test_labels, predictions, labels=unique_labels)
@@ -33,7 +34,7 @@ def evaluate_model(model: SetFitModel, test_texts: list[str], test_labels: list[
         "per_class_metrics": class_metrics
     }
 
-    return metrics
+    return metrics, predictions
 
 def pretty_print(metrics: Dict):
     print("\n🔍 Evaluation Metrics")

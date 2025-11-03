@@ -1,0 +1,1036 @@
+Activating Python environment...
+Environment activated.
+--- GPU Status ---
+Mon Oct 13 09:05:43 2025       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.247.01             Driver Version: 535.247.01   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100-SXM4-40GB          On  | 00000000:41:00.0 Off |                    0 |
+| N/A   28C    P0              51W / 400W |      0MiB / 40960MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+--- Running on Host ---
+Running on n-hpc-gz6
+--- Current Directory ---
+Current working directory: /work/shapovalov/KML
+--- Temporary Directories Debug ---
+SLURM_TMPDIR is: 
+TMPDIR is: /tmp
+Checking /tmp content:
+drwxrwxrwt 29 root root 229376 Oct 13 08:28 /tmp
+Checking /dev/shm content:
+drwxrwxrwt 22 root root 16520 Oct 13 08:28 /dev/shm
+---
+Staging model from ./downloaded_model to local scratch /tmp/shapovalov_setfit_model_cache_1386204...
+sending incremental file list
+./
+README.md
+config.json
+config_sentence_transformers.json
+config_setfit.json
+model.safetensors
+model_head.pkl
+modules.json
+sentence_bert_config.json
+special_tokens_map.json
+tokenizer.json
+tokenizer_config.json
+vocab.txt
+1_Pooling/
+1_Pooling/config.json
+
+sent 439,027,280 bytes  received 274 bytes  175,611,021.60 bytes/sec
+total size is 438,919,162  speedup is 1.00
+Model staging complete.
+SETFIT_MODEL_PATH set to: /tmp/shapovalov_setfit_model_cache_1386204
+Starting Few_Shot_Training.py...
+Starting optuna cross validation training...
+Loading data from Training_Data_Filtered with text column 'text' and label column 'label'
+Data_Journalism_Daten_Filtered.csv loaded with 100 examples.
+Loaded 100 total examples for training.
+Using device: cuda
+CUDA available: True
+Starting cross validation with optuna with 5 folds and 5 trials
+Filtering dones. Loaded texsts and labels
+Labels: {'Data Journalism', 'Not Data Journalism', 'Half Data Journalism'}
+Trial 0: {'num_iterations': 7, 'num_epochs': 4, 'batch_size': 16, 'head_lr': 0.008471801418819975}
+Fold 1/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3753, 'grad_norm': 3.523641347885132, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1711, 'grad_norm': 1.0992686748504639, 'learning_rate': 1.8333333333333333e-05, 'epoch': 0.71}
+{'embedding_loss': 0.0365, 'grad_norm': 0.583549439907074, 'learning_rate': 1.4365079365079366e-05, 'epoch': 1.43}
+{'embedding_loss': 0.0211, 'grad_norm': 0.43384453654289246, 'learning_rate': 1.0396825396825398e-05, 'epoch': 2.14}
+{'embedding_loss': 0.0075, 'grad_norm': 0.06952089816331863, 'learning_rate': 6.4285714285714295e-06, 'epoch': 2.86}
+{'embedding_loss': 0.0024, 'grad_norm': 0.08683845400810242, 'learning_rate': 2.4603174603174605e-06, 'epoch': 3.57}
+{'train_runtime': 218.3965, 'train_samples_per_second': 20.513, 'train_steps_per_second': 1.282, 'train_loss': 0.04345290763303637, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+  Label Not Data Journalism: 14
+
+✅ Overall Metrics:
+  Accuracy : 0.8500
+  Precision: 0.8625
+  Recall   : 0.8500
+  F1       : 0.8367
+
+🧩 Confusion Matrix:
+  [2, 1, 1]
+  [0, 1, 1]
+  [0, 0, 14]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=2, FP=0, FN=2, TN=16
+  Class Half Data Journalism: TP=1, FP=1, FN=1, TN=17
+  Class Not Data Journalism: TP=14, FP=2, FN=0, TN=4
+----------------------------------------
+Fold finished F1 Score: 0.8633333333333333 None
+Fold 2/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3604, 'grad_norm': 3.6940126419067383, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1652, 'grad_norm': 1.7277313470840454, 'learning_rate': 1.8333333333333333e-05, 'epoch': 0.71}
+{'embedding_loss': 0.0307, 'grad_norm': 0.15537594258785248, 'learning_rate': 1.4365079365079366e-05, 'epoch': 1.43}
+{'embedding_loss': 0.0247, 'grad_norm': 0.22162839770317078, 'learning_rate': 1.0396825396825398e-05, 'epoch': 2.14}
+{'embedding_loss': 0.0121, 'grad_norm': 0.8466066718101501, 'learning_rate': 6.4285714285714295e-06, 'epoch': 2.86}
+{'embedding_loss': 0.0059, 'grad_norm': 0.13523165881633759, 'learning_rate': 2.4603174603174605e-06, 'epoch': 3.57}
+{'train_runtime': 217.9361, 'train_samples_per_second': 20.556, 'train_steps_per_second': 1.285, 'train_loss': 0.04394170535462243, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 14
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.8286
+  Recall   : 0.7000
+  F1       : 0.7271
+
+🧩 Confusion Matrix:
+  [1, 3, 0]
+  [0, 2, 0]
+  [1, 2, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=1, FN=3, TN=15
+  Class Half Data Journalism: TP=2, FP=5, FN=0, TN=13
+  Class Not Data Journalism: TP=11, FP=0, FN=3, TN=6
+----------------------------------------
+Fold finished F1 Score: 0.6728888888888889 None
+Fold 3/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3287, 'grad_norm': 3.3898487091064453, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1599, 'grad_norm': 1.1501715183258057, 'learning_rate': 1.8333333333333333e-05, 'epoch': 0.71}
+{'embedding_loss': 0.0298, 'grad_norm': 0.13703902065753937, 'learning_rate': 1.4365079365079366e-05, 'epoch': 1.43}
+{'embedding_loss': 0.0107, 'grad_norm': 0.49390918016433716, 'learning_rate': 1.0396825396825398e-05, 'epoch': 2.14}
+{'embedding_loss': 0.0042, 'grad_norm': 0.04524746909737587, 'learning_rate': 6.4285714285714295e-06, 'epoch': 2.86}
+{'embedding_loss': 0.0047, 'grad_norm': 0.05790926516056061, 'learning_rate': 2.4603174603174605e-06, 'epoch': 3.57}
+{'train_runtime': 218.7907, 'train_samples_per_second': 20.476, 'train_steps_per_second': 1.28, 'train_loss': 0.038322210099015916, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Half Data Journalism: 2
+  Label Data Journalism: 5
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.7958
+  Recall   : 0.7500
+  F1       : 0.7720
+
+🧩 Confusion Matrix:
+  [4, 1, 0]
+  [1, 0, 1]
+  [0, 2, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=1, TN=14
+  Class Half Data Journalism: TP=0, FP=3, FN=2, TN=15
+  Class Not Data Journalism: TP=11, FP=1, FN=2, TN=6
+----------------------------------------
+Fold finished F1 Score: 0.728 None
+Fold 4/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.4535, 'grad_norm': 3.461676836013794, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1645, 'grad_norm': 1.1943645477294922, 'learning_rate': 1.8333333333333333e-05, 'epoch': 0.71}
+{'embedding_loss': 0.0233, 'grad_norm': 0.6556445360183716, 'learning_rate': 1.4365079365079366e-05, 'epoch': 1.43}
+{'embedding_loss': 0.0089, 'grad_norm': 0.18165211379528046, 'learning_rate': 1.0396825396825398e-05, 'epoch': 2.14}
+{'embedding_loss': 0.0029, 'grad_norm': 0.04053696244955063, 'learning_rate': 6.4285714285714295e-06, 'epoch': 2.86}
+{'embedding_loss': 0.0008, 'grad_norm': 0.03239411488175392, 'learning_rate': 2.4603174603174605e-06, 'epoch': 3.57}
+{'train_runtime': 219.868, 'train_samples_per_second': 20.376, 'train_steps_per_second': 1.273, 'train_loss': 0.036905004210504036, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.8500
+  Precision: 0.7233
+  Recall   : 0.8500
+  F1       : 0.7813
+
+🧩 Confusion Matrix:
+  [4, 0, 0]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=0, TN=15
+  Class Half Data Journalism: TP=0, FP=0, FN=3, TN=17
+  Class Not Data Journalism: TP=13, FP=2, FN=0, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.9186507936507937 None
+Fold 5/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.4009, 'grad_norm': 3.7379493713378906, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1646, 'grad_norm': 1.0493298768997192, 'learning_rate': 1.8333333333333333e-05, 'epoch': 0.71}
+{'embedding_loss': 0.0285, 'grad_norm': 0.03901967778801918, 'learning_rate': 1.4365079365079366e-05, 'epoch': 1.43}
+{'embedding_loss': 0.0079, 'grad_norm': 0.022954534739255905, 'learning_rate': 1.0396825396825398e-05, 'epoch': 2.14}
+{'embedding_loss': 0.0034, 'grad_norm': 0.4719381034374237, 'learning_rate': 6.4285714285714295e-06, 'epoch': 2.86}
+{'embedding_loss': 0.0015, 'grad_norm': 0.03033328987658024, 'learning_rate': 2.4603174603174605e-06, 'epoch': 3.57}
+{'train_runtime': 216.483, 'train_samples_per_second': 20.694, 'train_steps_per_second': 1.293, 'train_loss': 0.037791136346225225, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.5971
+  Recall   : 0.7000
+  F1       : 0.6300
+
+🧩 Confusion Matrix:
+  [1, 1, 2]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=1, FN=3, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=13, FP=4, FN=0, TN=3
+----------------------------------------
+Fold finished F1 Score: 0.77 None
+Average VRAM usage: 5372.50 MB, Max VRAM usage: 19491.59 MB
+Trial 0 completed with avg fold F1 score: 0.7905746031746032
+Trial 1: {'num_iterations': 8, 'num_epochs': 2, 'batch_size': 16, 'head_lr': 4.207053950287933e-05}
+Fold 1/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3451, 'grad_norm': 2.896070718765259, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1516, 'grad_norm': 0.5752060413360596, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0274, 'grad_norm': 0.05379689484834671, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.025, 'grad_norm': 0.3829774260520935, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 122.0876, 'train_samples_per_second': 20.969, 'train_steps_per_second': 1.311, 'train_loss': 0.06648770878091455, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+  Label Not Data Journalism: 14
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.8458
+  Recall   : 0.8000
+  F1       : 0.7733
+
+🧩 Confusion Matrix:
+  [1, 2, 1]
+  [0, 1, 1]
+  [0, 0, 14]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=0, FN=3, TN=16
+  Class Half Data Journalism: TP=1, FP=2, FN=1, TN=16
+  Class Not Data Journalism: TP=14, FP=2, FN=0, TN=4
+----------------------------------------
+Fold finished F1 Score: 0.8266666666666668 None
+Fold 2/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3706, 'grad_norm': 3.2043991088867188, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1411, 'grad_norm': 1.0733898878097534, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0323, 'grad_norm': 0.49563542008399963, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0255, 'grad_norm': 0.22552630305290222, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 122.7983, 'train_samples_per_second': 20.847, 'train_steps_per_second': 1.303, 'train_loss': 0.06471095541492104, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 14
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.8617
+  Recall   : 0.7500
+  F1       : 0.7923
+
+🧩 Confusion Matrix:
+  [3, 1, 0]
+  [0, 1, 1]
+  [0, 3, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=0, FN=1, TN=16
+  Class Half Data Journalism: TP=1, FP=4, FN=1, TN=14
+  Class Not Data Journalism: TP=11, FP=1, FN=3, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.7076923076923076 None
+Fold 3/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3392, 'grad_norm': 2.816593647003174, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1344, 'grad_norm': 1.0912376642227173, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0278, 'grad_norm': 0.03770431503653526, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0151, 'grad_norm': 0.0682036280632019, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 123.3407, 'train_samples_per_second': 20.756, 'train_steps_per_second': 1.297, 'train_loss': 0.057753275614231825, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Half Data Journalism: 2
+  Label Data Journalism: 5
+
+✅ Overall Metrics:
+  Accuracy : 0.8500
+  Precision: 0.8571
+  Recall   : 0.8500
+  F1       : 0.8500
+
+🧩 Confusion Matrix:
+  [4, 0, 1]
+  [0, 1, 1]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=0, FN=1, TN=15
+  Class Half Data Journalism: TP=1, FP=1, FN=1, TN=17
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.85 None
+Fold 4/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.2864, 'grad_norm': 2.9529924392700195, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1386, 'grad_norm': 0.7836949229240417, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0246, 'grad_norm': 0.15294700860977173, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0121, 'grad_norm': 1.1332333087921143, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 123.0, 'train_samples_per_second': 20.813, 'train_steps_per_second': 1.301, 'train_loss': 0.056040085223503414, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.7171
+  Recall   : 0.8000
+  F1       : 0.7556
+
+🧩 Confusion Matrix:
+  [4, 0, 0]
+  [1, 0, 2]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=0, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.8444444444444443 None
+Fold 5/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.392, 'grad_norm': 2.9009206295013428, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1401, 'grad_norm': 0.591770589351654, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.018, 'grad_norm': 0.32990825176239014, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0082, 'grad_norm': 0.12503911554813385, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 123.7288, 'train_samples_per_second': 20.69, 'train_steps_per_second': 1.293, 'train_loss': 0.0537567205959931, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.5971
+  Recall   : 0.7000
+  F1       : 0.6300
+
+🧩 Confusion Matrix:
+  [1, 1, 2]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=1, FN=3, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=13, FP=4, FN=0, TN=3
+----------------------------------------
+Fold finished F1 Score: 0.77 None
+Average VRAM usage: 5033.48 MB, Max VRAM usage: 11344.52 MB
+Trial 1 completed with avg fold F1 score: 0.7997606837606838
+Trial 2: {'num_iterations': 6, 'num_epochs': 4, 'batch_size': 16, 'head_lr': 0.002537815508265664}
+Fold 1/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3249, 'grad_norm': 2.6149380207061768, 'learning_rate': 0.0, 'epoch': 0.02}
+{'embedding_loss': 0.1563, 'grad_norm': 0.7740299701690674, 'learning_rate': 1.7685185185185187e-05, 'epoch': 0.83}
+{'embedding_loss': 0.035, 'grad_norm': 0.5127026438713074, 'learning_rate': 1.3055555555555557e-05, 'epoch': 1.67}
+{'embedding_loss': 0.0199, 'grad_norm': 0.327178418636322, 'learning_rate': 8.425925925925926e-06, 'epoch': 2.5}
+{'embedding_loss': 0.0125, 'grad_norm': 0.09753026813268661, 'learning_rate': 3.796296296296297e-06, 'epoch': 3.33}
+{'train_runtime': 183.3789, 'train_samples_per_second': 20.94, 'train_steps_per_second': 1.309, 'train_loss': 0.04868307920793692, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+  Label Not Data Journalism: 14
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.8458
+  Recall   : 0.8000
+  F1       : 0.7733
+
+🧩 Confusion Matrix:
+  [1, 2, 1]
+  [0, 1, 1]
+  [0, 0, 14]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=0, FN=3, TN=16
+  Class Half Data Journalism: TP=1, FP=2, FN=1, TN=16
+  Class Not Data Journalism: TP=14, FP=2, FN=0, TN=4
+----------------------------------------
+Fold finished F1 Score: 0.8266666666666668 None
+Fold 2/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.4045, 'grad_norm': 3.366190195083618, 'learning_rate': 0.0, 'epoch': 0.02}
+{'embedding_loss': 0.159, 'grad_norm': 1.4039093255996704, 'learning_rate': 1.7685185185185187e-05, 'epoch': 0.83}
+{'embedding_loss': 0.0341, 'grad_norm': 0.5971567630767822, 'learning_rate': 1.3055555555555557e-05, 'epoch': 1.67}
+{'embedding_loss': 0.0161, 'grad_norm': 0.2914002537727356, 'learning_rate': 8.425925925925926e-06, 'epoch': 2.5}
+{'embedding_loss': 0.0103, 'grad_norm': 0.034581445157527924, 'learning_rate': 3.796296296296297e-06, 'epoch': 3.33}
+{'train_runtime': 183.6541, 'train_samples_per_second': 20.909, 'train_steps_per_second': 1.307, 'train_loss': 0.04788099614282449, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 14
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.8900
+  Recall   : 0.8000
+  F1       : 0.8231
+
+🧩 Confusion Matrix:
+  [3, 1, 0]
+  [0, 2, 0]
+  [1, 2, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=1, FN=1, TN=15
+  Class Half Data Journalism: TP=2, FP=3, FN=0, TN=15
+  Class Not Data Journalism: TP=11, FP=0, FN=3, TN=6
+----------------------------------------
+Fold finished F1 Score: 0.7768571428571429 None
+Fold 3/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3841, 'grad_norm': 3.0262792110443115, 'learning_rate': 0.0, 'epoch': 0.02}
+{'embedding_loss': 0.1467, 'grad_norm': 1.0820295810699463, 'learning_rate': 1.7685185185185187e-05, 'epoch': 0.83}
+{'embedding_loss': 0.0259, 'grad_norm': 0.317440003156662, 'learning_rate': 1.3055555555555557e-05, 'epoch': 1.67}
+{'embedding_loss': 0.0144, 'grad_norm': 0.06158353388309479, 'learning_rate': 8.425925925925926e-06, 'epoch': 2.5}
+{'embedding_loss': 0.0037, 'grad_norm': 0.14661671221256256, 'learning_rate': 3.796296296296297e-06, 'epoch': 3.33}
+{'train_runtime': 185.005, 'train_samples_per_second': 20.756, 'train_steps_per_second': 1.297, 'train_loss': 0.04174337921043237, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Half Data Journalism: 2
+  Label Data Journalism: 5
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.7833
+  Recall   : 0.7000
+  F1       : 0.7387
+
+🧩 Confusion Matrix:
+  [3, 2, 0]
+  [1, 0, 1]
+  [0, 2, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=1, FN=2, TN=14
+  Class Half Data Journalism: TP=0, FP=4, FN=2, TN=14
+  Class Not Data Journalism: TP=11, FP=1, FN=2, TN=6
+----------------------------------------
+Fold finished F1 Score: 0.6613333333333333 None
+Fold 4/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3682, 'grad_norm': 3.33510684967041, 'learning_rate': 0.0, 'epoch': 0.02}
+{'embedding_loss': 0.1517, 'grad_norm': 1.3155646324157715, 'learning_rate': 1.7685185185185187e-05, 'epoch': 0.83}
+{'embedding_loss': 0.0226, 'grad_norm': 0.0526847280561924, 'learning_rate': 1.3055555555555557e-05, 'epoch': 1.67}
+{'embedding_loss': 0.0083, 'grad_norm': 0.07053869217634201, 'learning_rate': 8.425925925925926e-06, 'epoch': 2.5}
+{'embedding_loss': 0.0033, 'grad_norm': 0.04095889627933502, 'learning_rate': 3.796296296296297e-06, 'epoch': 3.33}
+{'train_runtime': 184.3992, 'train_samples_per_second': 20.824, 'train_steps_per_second': 1.302, 'train_loss': 0.03988879487539331, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.7171
+  Recall   : 0.8000
+  F1       : 0.7556
+
+🧩 Confusion Matrix:
+  [4, 0, 0]
+  [1, 0, 2]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=0, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.8444444444444443 None
+Fold 5/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3582, 'grad_norm': 2.8250327110290527, 'learning_rate': 0.0, 'epoch': 0.02}
+{'embedding_loss': 0.1509, 'grad_norm': 0.5533839464187622, 'learning_rate': 1.7685185185185187e-05, 'epoch': 0.83}
+{'embedding_loss': 0.0217, 'grad_norm': 0.45498621463775635, 'learning_rate': 1.3055555555555557e-05, 'epoch': 1.67}
+{'embedding_loss': 0.0054, 'grad_norm': 0.2887108623981476, 'learning_rate': 8.425925925925926e-06, 'epoch': 2.5}
+{'embedding_loss': 0.0008, 'grad_norm': 0.02419511042535305, 'learning_rate': 3.796296296296297e-06, 'epoch': 3.33}
+{'train_runtime': 185.1355, 'train_samples_per_second': 20.742, 'train_steps_per_second': 1.296, 'train_loss': 0.038237712283929186, 'epoch': 4.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.6967
+  Recall   : 0.7500
+  F1       : 0.7179
+
+🧩 Confusion Matrix:
+  [2, 2, 0]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=2, FP=1, FN=2, TN=15
+  Class Half Data Journalism: TP=0, FP=2, FN=3, TN=15
+  Class Not Data Journalism: TP=13, FP=2, FN=0, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.7821428571428571 None
+Average VRAM usage: 5112.29 MB, Max VRAM usage: 21258.88 MB
+Trial 2 completed with avg fold F1 score: 0.7782888888888888
+Trial 3: {'num_iterations': 8, 'num_epochs': 2, 'batch_size': 16, 'head_lr': 0.07579479953348005}
+Fold 1/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3451, 'grad_norm': 2.896070718765259, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1516, 'grad_norm': 0.5752060413360596, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0274, 'grad_norm': 0.05379689484834671, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.025, 'grad_norm': 0.3829774260520935, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 122.856, 'train_samples_per_second': 20.837, 'train_steps_per_second': 1.302, 'train_loss': 0.06648770878091455, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+  Label Not Data Journalism: 14
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.8458
+  Recall   : 0.8000
+  F1       : 0.7733
+
+🧩 Confusion Matrix:
+  [1, 2, 1]
+  [0, 1, 1]
+  [0, 0, 14]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=0, FN=3, TN=16
+  Class Half Data Journalism: TP=1, FP=2, FN=1, TN=16
+  Class Not Data Journalism: TP=14, FP=2, FN=0, TN=4
+----------------------------------------
+Fold finished F1 Score: 0.8266666666666668 None
+Fold 2/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3706, 'grad_norm': 3.2043991088867188, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1411, 'grad_norm': 1.0733898878097534, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0323, 'grad_norm': 0.49563542008399963, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0255, 'grad_norm': 0.22552630305290222, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 122.4273, 'train_samples_per_second': 20.91, 'train_steps_per_second': 1.307, 'train_loss': 0.06471095541492104, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 14
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.8617
+  Recall   : 0.7500
+  F1       : 0.7923
+
+🧩 Confusion Matrix:
+  [3, 1, 0]
+  [0, 1, 1]
+  [0, 3, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=0, FN=1, TN=16
+  Class Half Data Journalism: TP=1, FP=4, FN=1, TN=14
+  Class Not Data Journalism: TP=11, FP=1, FN=3, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.7076923076923076 None
+Fold 3/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3392, 'grad_norm': 2.816593647003174, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1344, 'grad_norm': 1.0912376642227173, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0278, 'grad_norm': 0.03770431503653526, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0151, 'grad_norm': 0.0682036280632019, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 122.8079, 'train_samples_per_second': 20.846, 'train_steps_per_second': 1.303, 'train_loss': 0.057753275614231825, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Half Data Journalism: 2
+  Label Data Journalism: 5
+
+✅ Overall Metrics:
+  Accuracy : 0.8500
+  Precision: 0.8571
+  Recall   : 0.8500
+  F1       : 0.8500
+
+🧩 Confusion Matrix:
+  [4, 0, 1]
+  [0, 1, 1]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=0, FN=1, TN=15
+  Class Half Data Journalism: TP=1, FP=1, FN=1, TN=17
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.85 None
+Fold 4/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.2864, 'grad_norm': 2.9529924392700195, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1386, 'grad_norm': 0.7836949229240417, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.0246, 'grad_norm': 0.15294700860977173, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0121, 'grad_norm': 1.1332333087921143, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 123.7199, 'train_samples_per_second': 20.692, 'train_steps_per_second': 1.293, 'train_loss': 0.056040085223503414, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.7171
+  Recall   : 0.8000
+  F1       : 0.7556
+
+🧩 Confusion Matrix:
+  [4, 0, 0]
+  [1, 0, 2]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=0, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.8444444444444443 None
+Fold 5/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.392, 'grad_norm': 2.9009206295013428, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1401, 'grad_norm': 0.591770589351654, 'learning_rate': 1.5416666666666668e-05, 'epoch': 0.62}
+{'embedding_loss': 0.018, 'grad_norm': 0.32990825176239014, 'learning_rate': 8.472222222222223e-06, 'epoch': 1.25}
+{'embedding_loss': 0.0082, 'grad_norm': 0.12503911554813385, 'learning_rate': 1.527777777777778e-06, 'epoch': 1.88}
+{'train_runtime': 124.7538, 'train_samples_per_second': 20.52, 'train_steps_per_second': 1.283, 'train_loss': 0.0537567205959931, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.5971
+  Recall   : 0.7000
+  F1       : 0.6300
+
+🧩 Confusion Matrix:
+  [1, 1, 2]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=1, FN=3, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=13, FP=4, FN=0, TN=3
+----------------------------------------
+Fold finished F1 Score: 0.77 None
+Average VRAM usage: 5340.32 MB, Max VRAM usage: 16817.08 MB
+Trial 3 completed with avg fold F1 score: 0.7997606837606838
+Trial 4: {'num_iterations': 9, 'num_epochs': 2, 'batch_size': 16, 'head_lr': 5.3370327626039544e-05}
+Fold 1/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3055, 'grad_norm': 2.91137433052063, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1525, 'grad_norm': 1.1672433614730835, 'learning_rate': 1.617283950617284e-05, 'epoch': 0.56}
+{'embedding_loss': 0.0336, 'grad_norm': 1.1562250852584839, 'learning_rate': 1e-05, 'epoch': 1.11}
+{'embedding_loss': 0.0261, 'grad_norm': 0.3873855471611023, 'learning_rate': 3.827160493827161e-06, 'epoch': 1.67}
+{'train_runtime': 138.5699, 'train_samples_per_second': 20.784, 'train_steps_per_second': 1.299, 'train_loss': 0.062266685234175785, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+  Label Not Data Journalism: 14
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.8783
+  Recall   : 0.8000
+  F1       : 0.7892
+
+🧩 Confusion Matrix:
+  [1, 3, 0]
+  [0, 1, 1]
+  [0, 0, 14]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=0, FN=3, TN=16
+  Class Half Data Journalism: TP=1, FP=3, FN=1, TN=15
+  Class Not Data Journalism: TP=14, FP=1, FN=0, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.8108045977011494 None
+Fold 2/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3031, 'grad_norm': 2.697917938232422, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.148, 'grad_norm': 1.423376441001892, 'learning_rate': 1.617283950617284e-05, 'epoch': 0.56}
+{'embedding_loss': 0.037, 'grad_norm': 0.6375268697738647, 'learning_rate': 1e-05, 'epoch': 1.11}
+{'embedding_loss': 0.0182, 'grad_norm': 0.6356250047683716, 'learning_rate': 3.827160493827161e-06, 'epoch': 1.67}
+{'train_runtime': 138.2515, 'train_samples_per_second': 20.832, 'train_steps_per_second': 1.302, 'train_loss': 0.05920573522647222, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 14
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.8167
+  Recall   : 0.7500
+  F1       : 0.7756
+
+🧩 Confusion Matrix:
+  [3, 1, 0]
+  [0, 1, 1]
+  [1, 2, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=1, FN=1, TN=15
+  Class Half Data Journalism: TP=1, FP=3, FN=1, TN=15
+  Class Not Data Journalism: TP=11, FP=1, FN=3, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.7243589743589742 None
+Fold 3/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3434, 'grad_norm': 3.14304518699646, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1439, 'grad_norm': 1.8053278923034668, 'learning_rate': 1.617283950617284e-05, 'epoch': 0.56}
+{'embedding_loss': 0.0302, 'grad_norm': 0.20020297169685364, 'learning_rate': 1e-05, 'epoch': 1.11}
+{'embedding_loss': 0.0231, 'grad_norm': 0.8219862580299377, 'learning_rate': 3.827160493827161e-06, 'epoch': 1.67}
+{'train_runtime': 139.476, 'train_samples_per_second': 20.649, 'train_steps_per_second': 1.291, 'train_loss': 0.05888469268878301, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Half Data Journalism: 2
+  Label Data Journalism: 5
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.7446
+  Recall   : 0.7500
+  F1       : 0.7444
+
+🧩 Confusion Matrix:
+  [3, 1, 1]
+  [1, 0, 1]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=1, FN=2, TN=14
+  Class Half Data Journalism: TP=0, FP=2, FN=2, TN=16
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.7555555555555554 None
+Fold 4/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3821, 'grad_norm': 3.3300387859344482, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1342, 'grad_norm': 0.26525670289993286, 'learning_rate': 1.617283950617284e-05, 'epoch': 0.56}
+{'embedding_loss': 0.0248, 'grad_norm': 0.9878453016281128, 'learning_rate': 1e-05, 'epoch': 1.11}
+{'embedding_loss': 0.0097, 'grad_norm': 0.0503140427172184, 'learning_rate': 3.827160493827161e-06, 'epoch': 1.67}
+{'train_runtime': 141.0143, 'train_samples_per_second': 20.423, 'train_steps_per_second': 1.276, 'train_loss': 0.04939259274138345, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.7171
+  Recall   : 0.8000
+  F1       : 0.7556
+
+🧩 Confusion Matrix:
+  [4, 0, 0]
+  [1, 0, 2]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=0, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+Fold finished F1 Score: 0.8444444444444443 None
+Fold 5/5
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386204
+{'embedding_loss': 0.3429, 'grad_norm': 2.7064952850341797, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1425, 'grad_norm': 1.5639947652816772, 'learning_rate': 1.617283950617284e-05, 'epoch': 0.56}
+{'embedding_loss': 0.0244, 'grad_norm': 0.37854865193367004, 'learning_rate': 1e-05, 'epoch': 1.11}
+{'embedding_loss': 0.0069, 'grad_norm': 0.059994589537382126, 'learning_rate': 3.827160493827161e-06, 'epoch': 1.67}
+{'train_runtime': 140.667, 'train_samples_per_second': 20.474, 'train_steps_per_second': 1.28, 'train_loss': 0.049740581131643716, 'epoch': 2.0}
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.6281
+  Recall   : 0.7000
+  F1       : 0.6494
+
+🧩 Confusion Matrix:
+  [1, 2, 1]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=1, FN=3, TN=15
+  Class Half Data Journalism: TP=0, FP=2, FN=3, TN=15
+  Class Not Data Journalism: TP=13, FP=3, FN=0, TN=4
+----------------------------------------
+Fold finished F1 Score: 0.7505747126436781 None
+Average VRAM usage: 4783.23 MB, Max VRAM usage: 21228.84 MB
+Trial 4 completed with avg fold F1 score: 0.7771476569407603
+
+
+Best Trial Found 1:
+FrozenTrial(number=1, state=1, values=[0.7997606837606838], datetime_start=datetime.datetime(2025, 10, 13, 9, 24, 26, 278279), datetime_complete=datetime.datetime(2025, 10, 13, 9, 34, 56, 119272), params={'num_iterations': 8, 'num_epochs': 2, 'batch_size': 16, 'head_learning_rate': 4.207053950287933e-05}, user_attrs={}, system_attrs={}, intermediate_values={}, distributions={'num_iterations': IntDistribution(high=9, log=False, low=6, step=1), 'num_epochs': IntDistribution(high=4, log=False, low=2, step=1), 'batch_size': CategoricalDistribution(choices=(16,)), 'head_learning_rate': FloatDistribution(high=0.1, log=True, low=1e-05, step=None)}, trial_id=1, value=None)
+
+Metrics: 
+
+Fold 1 Metrics:
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+  Label Not Data Journalism: 14
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.8458
+  Recall   : 0.8000
+  F1       : 0.7733
+
+🧩 Confusion Matrix:
+  [1, 2, 1]
+  [0, 1, 1]
+  [0, 0, 14]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=0, FN=3, TN=16
+  Class Half Data Journalism: TP=1, FP=2, FN=1, TN=16
+  Class Not Data Journalism: TP=14, FP=2, FN=0, TN=4
+----------------------------------------
+
+Fold 2 Metrics:
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 14
+  Label Data Journalism: 4
+  Label Half Data Journalism: 2
+
+✅ Overall Metrics:
+  Accuracy : 0.7500
+  Precision: 0.8617
+  Recall   : 0.7500
+  F1       : 0.7923
+
+🧩 Confusion Matrix:
+  [3, 1, 0]
+  [0, 1, 1]
+  [0, 3, 11]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=3, FP=0, FN=1, TN=16
+  Class Half Data Journalism: TP=1, FP=4, FN=1, TN=14
+  Class Not Data Journalism: TP=11, FP=1, FN=3, TN=5
+----------------------------------------
+
+Fold 3 Metrics:
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Half Data Journalism: 2
+  Label Data Journalism: 5
+
+✅ Overall Metrics:
+  Accuracy : 0.8500
+  Precision: 0.8571
+  Recall   : 0.8500
+  F1       : 0.8500
+
+🧩 Confusion Matrix:
+  [4, 0, 1]
+  [0, 1, 1]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=0, FN=1, TN=15
+  Class Half Data Journalism: TP=1, FP=1, FN=1, TN=17
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+
+Fold 4 Metrics:
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.8000
+  Precision: 0.7171
+  Recall   : 0.8000
+  F1       : 0.7556
+
+🧩 Confusion Matrix:
+  [4, 0, 0]
+  [1, 0, 2]
+  [0, 1, 12]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=4, FP=1, FN=0, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=12, FP=2, FN=1, TN=5
+----------------------------------------
+
+Fold 5 Metrics:
+
+🔍 Evaluation Metrics
+----------------------------------------
+📊 Label Distribution:
+  Label Not Data Journalism: 13
+  Label Data Journalism: 4
+  Label Half Data Journalism: 3
+
+✅ Overall Metrics:
+  Accuracy : 0.7000
+  Precision: 0.5971
+  Recall   : 0.7000
+  F1       : 0.6300
+
+🧩 Confusion Matrix:
+  [1, 1, 2]
+  [1, 0, 2]
+  [0, 0, 13]
+
+📌 Per-Class Metrics:
+  Class Data Journalism: TP=1, FP=1, FN=3, TN=15
+  Class Half Data Journalism: TP=0, FP=1, FN=3, TN=16
+  Class Not Data Journalism: TP=13, FP=4, FN=0, TN=3
+----------------------------------------
+Cross validation completed.
+Training final model on full dataset with optimal fold average parameters...
+Few_Shot_Training.py finished.

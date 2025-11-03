@@ -1,0 +1,75 @@
+Activating Python environment...
+Environment activated.
+--- GPU Status ---
+Mon Oct 13 11:34:31 2025       
++---------------------------------------------------------------------------------------+
+| NVIDIA-SMI 535.247.01             Driver Version: 535.247.01   CUDA Version: 12.2     |
+|-----------------------------------------+----------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id        Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |         Memory-Usage | GPU-Util  Compute M. |
+|                                         |                      |               MIG M. |
+|=========================================+======================+======================|
+|   0  NVIDIA A100-SXM4-40GB          On  | 00000000:C1:00.0 Off |                    0 |
+| N/A   28C    P0              51W / 400W |      4MiB / 40960MiB |      0%      Default |
+|                                         |                      |             Disabled |
++-----------------------------------------+----------------------+----------------------+
+                                                                                         
++---------------------------------------------------------------------------------------+
+| Processes:                                                                            |
+|  GPU   GI   CI        PID   Type   Process name                            GPU Memory |
+|        ID   ID                                                             Usage      |
+|=======================================================================================|
+|  No running processes found                                                           |
++---------------------------------------------------------------------------------------+
+--- Running on Host ---
+Running on n-hpc-gz6
+--- Current Directory ---
+Current working directory: /work/shapovalov/KML
+--- Temporary Directories Debug ---
+SLURM_TMPDIR is: 
+TMPDIR is: /tmp
+Checking /tmp content:
+drwxrwxrwt 32 root root 229376 Oct 13 11:00 /tmp
+Checking /dev/shm content:
+drwxrwxrwt 22 root root 16540 Oct 13 10:59 /dev/shm
+---
+Staging model from ./downloaded_model to local scratch /tmp/shapovalov_setfit_model_cache_1386886...
+sending incremental file list
+./
+README.md
+config.json
+config_sentence_transformers.json
+config_setfit.json
+model.safetensors
+model_head.pkl
+modules.json
+sentence_bert_config.json
+special_tokens_map.json
+tokenizer.json
+tokenizer_config.json
+vocab.txt
+1_Pooling/
+1_Pooling/config.json
+
+sent 439,027,280 bytes  received 274 bytes  292,685,036.00 bytes/sec
+total size is 438,919,162  speedup is 1.00
+Model staging complete.
+SETFIT_MODEL_PATH set to: /tmp/shapovalov_setfit_model_cache_1386886
+Starting Few_Shot_Training.py...
+Starting standard training...
+Loading data from Training_Data_Filtered with text column 'text' and label column 'label'
+Data_Journalism_Daten_Filtered.csv loaded with 100 examples.
+Loaded 100 total examples for training.
+Training model with parameters TrainingArguments(output_dir='checkpoints', max_steps=-1, sampling_strategy='oversampling', num_iterations=8, head_learning_rate=1.5339162591163613e-05, loss=<class 'sentence_transformers.losses.CosineSimilarityLoss.CosineSimilarityLoss'>, distance_metric=<function BatchHardTripletLossDistanceFunction.cosine_distance at 0x7f156cbb5800>, margin=0.25, end_to_end=False, use_amp=True, warmup_proportion=0.1, l2_weight=0.01, max_length=None, samples_per_label=2, show_progress_bar=True, seed=42, report_to=[], run_name=None, logging_dir='runs/Oct13_11-34-43_n-hpc-gz6', logging_strategy=<IntervalStrategy.STEPS: 'steps'>, logging_first_step=True, logging_steps=50, eval_strategy=<IntervalStrategy.NO: 'no'>, eval_steps=None, eval_delay=0, eval_max_steps=-1, save_strategy='no', save_steps=500, save_total_limit=1, load_best_model_at_end=False)
+Loading model from HPC local scratch: /tmp/shapovalov_setfit_model_cache_1386886
+{'embedding_loss': 0.4043, 'grad_norm': 3.6487672328948975, 'learning_rate': 0.0, 'epoch': 0.01}
+{'embedding_loss': 0.1793, 'grad_norm': 2.020247220993042, 'learning_rate': 1.8592592592592592e-05, 'epoch': 0.5}
+{'embedding_loss': 0.0371, 'grad_norm': 0.9260664582252502, 'learning_rate': 1.488888888888889e-05, 'epoch': 1.0}
+{'embedding_loss': 0.0146, 'grad_norm': 0.14532257616519928, 'learning_rate': 1.1185185185185185e-05, 'epoch': 1.5}
+{'embedding_loss': 0.0079, 'grad_norm': 0.23487228155136108, 'learning_rate': 7.481481481481482e-06, 'epoch': 2.0}
+{'embedding_loss': 0.0039, 'grad_norm': 0.12666618824005127, 'learning_rate': 3.777777777777778e-06, 'epoch': 2.5}
+{'embedding_loss': 0.0016, 'grad_norm': 0.054853908717632294, 'learning_rate': 7.407407407407409e-08, 'epoch': 3.0}
+{'train_runtime': 233.238, 'train_samples_per_second': 20.58, 'train_steps_per_second': 1.286, 'train_loss': 0.041494610930482546, 'epoch': 3.0}
+Final model trained on full dataset and saved at Trained_Model_Stackshare_and_Github.
+Finished training. Saved model to Trained_Model_Stackshare_and_Github
+Few_Shot_Training.py finished.

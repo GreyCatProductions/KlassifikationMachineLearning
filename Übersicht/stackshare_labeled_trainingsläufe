@@ -1,0 +1,30 @@
+1. 1199281
+40 Trials
+        params = {
+            "num_iterations": trial.suggest_int("num_iterations", 10, 14),
+            "num_epochs": trial.suggest_int("num_epochs", 2, 5),
+            "batch_size": trial.suggest_categorical("batch_size", [8, 16, 24]),
+            "body_lr": trial.suggest_float("body_learning_rate", 1e-6, 5e-5, log=True),
+            "head_lr": trial.suggest_float("head_learning_rate", 1e-5, 1e-1, log=True)
+        }
+
+        optimum:
+params={'num_iterations': 11, 'num_epochs': 4, 'batch_size': 16,
+'body_learning_rate': 2.5215869373228865e-05, 'head_learning_rate': 3.064882896528333e-05}
+
+        Bemerkung:
+
+2. 1222769
+40 Trials
+        params = {
+            "num_iterations": trial.suggest_int("num_iterations", 10, 12),
+            "num_epochs": trial.suggest_int("num_epochs", 3, 6),
+            "batch_size": trial.suggest_categorical("batch_size", [16]),
+            "head_lr": trial.suggest_float("head_learning_rate", 1e-5, 1e-1, log=True)
+        }
+
+        optimum:
+        params = {'num_iterations': 12,
+        'num_epochs': 5,
+        'batch_size': 16,
+        'head_lr': 1.0719864040714887e-05}

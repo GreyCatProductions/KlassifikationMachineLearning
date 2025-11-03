@@ -19,20 +19,21 @@ def filter_csv_by_label(target: Path, target_label_column: str, labels_to_filter
     return filtered_df
 
 if __name__ == "__main__":
-    target_file = Path("./stackshare_labeled.csv")
-    filter_file = Path("../Training_Data_Filtered/Classifications_Product(sample_to_classify).csv")
+    target_file = Path("classification_data_align_new_filtered.csv")
+    filter_file = Path("Classifications_Data_Align(classification_tim)_filled.csv")
     output_folder = Path("./filtered_dataset")
     output_folder.mkdir(parents=True, exist_ok=True)
     output_path = Path(f"{output_folder}/{target_file.name}_filtered.csv")
 
-    filter_label_column = "Final"
+    filter_label_column = "decision"
+    target_label_column = "decision"
+
     if not CSV_Tools.verify_columns(filter_file, [filter_label_column]):
         raise ValueError(f"Filter file {filter_file} is missing required column: {filter_label_column}")
 
     df = pd.read_csv(filter_file, sep=None, engine="python")
     labels_to_filter = df[filter_label_column].unique().tolist()
 
-    target_label_column = "label"
     if not CSV_Tools.verify_columns(target_file, [target_label_column]):
         raise ValueError(f"Target file {target_file} is missing required column: {target_label_column}")
 
