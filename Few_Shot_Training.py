@@ -29,6 +29,7 @@ def main():
     if not data_already_prepared:
         prepare_data(training_data_filtered, combined_column, label_column)
 
+    return
     cross_validate = True
     if cross_validate:
         print("Starting optuna cross validation training...")
